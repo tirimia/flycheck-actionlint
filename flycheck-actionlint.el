@@ -84,7 +84,7 @@
 (flycheck-def-executable-var actionlint "actionlint")
 (flycheck-define-checker actionlint
   "A Github Actions checker using actionlint"
-  :command ("actionline"
+  :command ("actionlint"
             "-oneline"
             (eval (flycheck-actionlint--shellcheck-arg))
             (eval (flycheck-actionlint--pyflakes-arg))
