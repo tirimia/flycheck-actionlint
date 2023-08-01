@@ -7,7 +7,7 @@
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "26") (flycheck "32"))
 ;; Homepage: https://github.com/tirimia/flycheck-actionlint
-;; Keywords: convenience, github, linter
+;; Keywords: convenience, github, linter, flycheck
 
 
 ;; This file is not part of GNU Emacs
@@ -40,12 +40,14 @@
   :group 'flycheck)
 
 (defcustom flycheck-actionlint-shellcheck "shellcheck"
-  "Command name or file path of shellcheck external command. If nil, shellcheck integration will be disabled."
+  "Command name or file path of shellcheck external command.
+If empty, shellcheck integration will be disabled."
   :type 'string
   :group 'flycheck-actionlint)
 
 (defcustom flycheck-actionlint-pyflakes "pyflakes"
-  "Command name or file path of pyflakes external command. If empty, pyflakes integration will be disabled."
+  "Command name or file path of pyflakes external command.
+If empty, pyflakes integration will be disabled."
   :type 'string
   :group 'flycheck-actionlint)
 
@@ -67,15 +69,18 @@
        (string-match-p "\\.ya?ml$" (buffer-file-name))))
 
 (defun flycheck-actionlint--shellcheck-arg ()
-  "Generate the command line argument for shellcheck based on 'flycheck-actionlint-shellcheck'."
+  "Generate the command line argument for shellcheck.
+Value is based on option `flycheck-actionlint-shellcheck'."
   (format "-shellcheck=%s" flycheck-actionlint-shellcheck))
 
 (defun flycheck-actionlint--pyflakes-arg ()
-  "Generate the command line argument for pyflakes based on 'flycheck-actionlint-pyflakes'."
+  "Generate the command line argument for pyflakes.
+Value is based on option `flycheck-actionlint-pyflakes'."
   (format "-pyflakes=%s" flycheck-actionlint-pyflakes))
 
 (defun flycheck-actionlint--ignore-args ()
-  "Generate the command line arguments that the declared expressions in 'flycheck-actionlint-ignore' describe."
+  "Generate the repeated ignore command line arguments.
+Value is based on option `flycheck-actionlint-ignore'."
   (let* ((formatter (lambda (exp) (format "-ignore '%s'" exp)))
          (flags (mapcar formatter flycheck-actionlint-ignore))
          (all-flags (string-join flags " ")))
@@ -83,7 +88,7 @@
 
 (flycheck-def-executable-var actionlint "actionlint")
 (flycheck-define-checker actionlint
-  "A Github Actions checker using actionlint"
+  "A Github Actions checker using actionlint."
   :command ("actionlint"
             "-oneline"
             (eval (flycheck-actionlint--shellcheck-arg))
