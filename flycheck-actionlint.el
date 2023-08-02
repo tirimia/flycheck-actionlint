@@ -4,7 +4,7 @@
 
 ;; Author: Theodor-Alexandru Irimia
 ;; Maintainer: Theodor-Alexandru Irimia
-;; Version: 0.1.0
+;; Version: 0.2.0
 ;; Package-Requires: ((emacs "26") (flycheck "32"))
 ;; Homepage: https://github.com/tirimia/flycheck-actionlint
 ;; Keywords: convenience, github, linter, flycheck
@@ -63,10 +63,8 @@ If empty, pyflakes integration will be disabled."
 
 (defun flycheck-actionlint--enable-p ()
   "Return non-nil if the actionlint linter should be enabled."
-  (and (flycheck-buffer-saved-p)
-       (string-match-p "\\.github/workflows/$"
-                       (file-name-directory (buffer-file-name)))
-       (string-match-p "\\.ya?ml$" (buffer-file-name))))
+  (let ((absolute-filename (expand-file-name (buffer-file-name))))
+    (string-match-p "/\\.github/workflows/.*\\.ya?ml" absolute-filename)))
 
 (defun flycheck-actionlint--shellcheck-arg ()
   "Generate the command line argument for shellcheck.
@@ -94,7 +92,7 @@ Value is based on option `flycheck-actionlint-ignore'."
             (eval (flycheck-actionlint--shellcheck-arg))
             (eval (flycheck-actionlint--pyflakes-arg))
             (eval (flycheck-actionlint--ignore-args))
-            source-original)
+            source)
   :error-patterns ((error line-start (file-name) ":" line ":" column ": " (message) line-end))
   :modes (yaml-mode yaml-ts-mode)
   :predicate flycheck-actionlint--enable-p
